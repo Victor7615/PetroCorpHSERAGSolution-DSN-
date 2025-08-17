@@ -98,8 +98,8 @@ Now that the Azure backend is ready, you can run the Streamlit application on yo
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <your-repository-url>
-cd <your-repository-folder>
+git clone https://github.com/Victor7615/PetroCorpHSERAGSolution-DSN-.git
+cd <repository-folder>
 ```
 
 ### Step 2: Set Up a Virtual Environment (Recommended)
