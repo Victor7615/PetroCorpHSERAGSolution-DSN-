@@ -1,4 +1,3 @@
-
 -----
 
 # HSE Compliance RAG Assistant ⚖️
@@ -9,7 +8,7 @@ It uses a **Retrieval-Augmented Generation (RAG)** architecture to provide relia
 
 The application is built with Python and Streamlit, powered by Azure AI Services for the backend, and deployed live on Render.
 
-## 🏛️ Architecture Overview
+##  Architecture Overview
 
 The application follows a modern RAG pattern:
 
@@ -22,7 +21,7 @@ The application follows a modern RAG pattern:
 
 -----
 
-##  Features
+## Features
 
   * **Grounded Answers**: Responses are based solely on the provided HSE policy document, ensuring accuracy.
   * **Intuitive Chat Interface**: A simple, interactive UI for asking compliance questions.
@@ -32,61 +31,67 @@ The application follows a modern RAG pattern:
 
 -----
 
-##  Tech Stack
+## Tech Stack
 
   * **Language**: Python 3.9+
   * **Frontend**: Streamlit
   * **Cloud & AI**: Microsoft Azure
-      * Azure AI Studio (for management)
+      * **Azure AI Foundry** (for management)
       * Azure OpenAI Service
       * Azure AI Search
   * **Deployment**: Render, Git & GitHub
 
 -----
 
-##  Part 1: Setting Up the Azure Backend
+##  Part 1: Setting Up the Azure Backend with Azure AI Foundry
 
-This is the foundation of the project. Follow these steps to set up all the necessary Azure services using Azure AI Studio.
+This is the foundation of the project. Follow these steps to set up all necessary Azure services.
 
 **Prerequisites:** An active Azure Subscription.
 
-### Step 1: Create an Azure AI Foundary Project
+### Step 1: Create an Azure AI Foundry Hub and Project
 
-1.  Navigate to the [Azure Portal](https://portal.azure.com/).
-2.  Create a new **Azure AI Hub** resource. This will serve as a container for your AI projects.
-3.  Once the AI Hub is created, navigate to **Azure AI Foundary** and create a new **Project** within your Hub. This project will be your workspace.
+1.  In a web browser, open the **Azure AI Foundry portal** at `https://ai.azure.com` and sign in.
+2.  Navigate to the management center (`https://ai.azure.com/managementCenter/allResources`) and select **Create new**. Choose the option to create a new **AI hub resource**.
+3.  In the creation wizard, select your subscription and resource group, and give your new **Azure AI Foundry hub** a unique name in a supported region (e.g., East US 2).
+4.  Once the hub is created, navigate to it and create a new **Project**. This project will be your primary workspace for deploying models and creating indexes.
 
 ### Step 2: Deploy the AI Models
 
-You need two types of models: one for generating text (chat) and one for creating embeddings (understanding text).
+You need two models: one for generating text (chat) and one for creating embeddings (understanding text).
 
-1.  In your AI Studio Project, go to the **Model catalog**.
-2.  Find and select the **`gpt-4o`** model. Click **Deploy** and choose the "Pay-as-you-go" option.
-3.  On the deployment screen, give it a clear **Deployment name** (e.g., `my-chat-model`). **This name is your `CHAT_MODEL` value.**
-4.  Repeat the process for the embedding model. Go back to the **Model catalog**, find **`text-embedding-ada-002`**, and deploy it.
-5.  Give it a unique **Deployment name** (e.g., `my-embedding-model`). **This name is your `EMBEDDING_MODEL` value.**
+1.  In your AI Foundry project, go to the **Models + endpoints** page in the left navigation pane.
+2.  Deploy the **`text-embedding-ada-002`** model. Give it a clear **Deployment name** (e.g., `my-embedding-model`). **This name is your `EMBEDDING_MODEL` value.**
+3.  Return to the **Models + endpoints** page and repeat the process to deploy the **`gpt-4o`** model. Give it a unique **Deployment name** (e.g., `my-chat-model`). **This name is your `CHAT_MODEL` value.**
 
-### Step 3: Create the Azure AI Search Service
+### Step 3: Add the Knowledge Base Data
 
-1.  In the Azure Portal, search for and create a new **Azure AI Search** resource.
-2.  Choose a pricing tier (the "Basic" or "Free" tier is sufficient for this project).
-3.  Once created, this service will have a **URL** and **Admin keys**. You will need these later.
+1.  Prepare your knowledge base document. For this project, it's the `HSE_Policy.pdf` or a similar text file.
+2.  In your AI Foundry project, navigate to the **Data + indexes** page.
+3.  Select **+ New data**. In the wizard, choose **Upload files/folders**.
+4.  Upload your policy document. Give the data asset a name, such as `hse-policy-data`.
 
 ### Step 4: Create the Vector Index
 
-This step involves uploading your policy document and having Azure AI Search index it.
+This step involves indexing your policy document so it can be searched efficiently.
 
-1.  Prepare your knowledge base document (e.g., `HSE_Policy.pdf`).
-2.  In Azure AI Studio, go to the **Indexes** tab in the left menu.
-3.  Click **+ Create index**.
-4.  **Source data**: Choose to upload your policy document.
-5.  **Index store**: Select the Azure AI Search service you created in the previous step.
-6.  Give your index a memorable name (e.g., `hse-policy-index`). **This is your `INDEX_NAME` value.**
-7.  The wizard will automatically handle chunking the document and creating vector embeddings using the model you deployed. Let the indexing job complete.
+1.  On the **Data + indexes** page, select the **Indexes** tab.
+2.  Click **+ New index** and configure it with the following settings:
+      * **Source location**: Select "Data in Azure AI Foundry" and choose the `hse-policy-data` asset you just created.
+      * **Index configuration**:
+          * **Select Azure AI Search service**: Choose to **Create a new Azure AI Search resource**.
+          * Provide a unique **Service name**, and ensure the **Location** and **Resource group** match your AI Foundry hub.
+          * Select the **Basic** pricing tier.
+      * **Vector index**: Give your index a memorable name (e.g., `hse-policy-index`). **This is your `INDEX_NAME` value.**
+      * **Search settings**:
+          * Ensure **Add vector search to this search resource** is enabled.
+          * For the **Azure OpenAI connection**, select the default resource for your hub.
+          * For the **Embedding model**, choose `text-embedding-ada-002` and select the deployment you created in Step 2.
+3.  Click **Create** and wait for the indexing process to complete.
 
 -----
 
-## 💻 Part 2: Running the Streamlit App Locally
+## Part 2: Running the Streamlit App Locally
 
 Now that the Azure backend is ready, you can run the Streamlit application on your local machine.
 
@@ -113,10 +118,7 @@ pip install -r requirements.txt
 
 ### Step 4: Configure Your Environment Variables
 
-1.  Create a new file in the root of your project named `.env`.
-2.  Add the credentials for the Azure services you created in Part 1. **Do not use quotes.**
-
-<!-- end list -->
+Create a file named `.env` in the root of your project and add the credentials for the Azure services you created in Part 1. **Do not use quotes.**
 
 ```env
 # .env file
@@ -139,26 +141,20 @@ INDEX_NAME="hse-policy-index"
 ### Step 5: Run the Application
 
 ```bash
-streamlit run app.py
+streamlit run Ragapp.py
 ```
-
-Your application should now be running in a new browser tab\!
 
 -----
 
-## 🌐 Part 3: Deploying to Render
+##  Part 3: Deploying to Render
 
 The final step is to deploy your application to make it publicly accessible.
 
 ### Step 1: Prepare Your Repository
 
-Ensure your project has the following four files at the root level:
+Ensure your project has the `Ragapp.py`, `requirements.txt`, `.gitignore`.
 
-  * `app.py` (your application code)
-  * `requirements.txt` (your dependencies)
-  * `.gitignore` (to exclude `.env`, `__pycache__/`, etc.)
- 
-
+The `startup.sh` file should contain:
 
 
 ### Step 2: Create a New Web Service on Render
@@ -168,19 +164,15 @@ Ensure your project has the following four files at the root level:
 3.  Configure the settings:
       * **Name**: A unique name for your app (e.g., `hse-assist`).
       * **Build Command**: `pip install -r requirements.txt`
-      
+      * **Start Command**: `bash startup.sh`
 
 ### Step 3: Add Environment Variables
 
-This is the most critical step. You must add the same key-value pairs from your local `.env` file to Render's secure environment variable manager.
-
-1.  In your service dashboard, go to the **Environment** tab.
-2.  Click **Add Environment Variable** for each key-value pair.
-3.  Enter the keys and values exactly as they are in your `.env` file, **without quotes**.
+In the **Environment** tab on Render, add the same key-value pairs from your local `.env` file. **Do not use quotes.**
 
 ### Step 4: Deploy
 
-Click **Create Web Service**. Render will build and deploy your application. Once complete, you'll have a public URL to access your HSE Compliance Assistant.
+Click **Create Web Service**. Render will build and deploy your application, providing you with a public URL.
 
 -----
 
@@ -188,9 +180,58 @@ Click **Create Web Service**. Render will build and deploy your application. Onc
 
 ```
 .
+Of course. Adding a UI theme configuration is a great way to customize your application's appearance.
+
+Here are the updated sections for your `README.md` file to reflect this change.
+
+-----
+
+### \#\# Updated Section: `Part 2: Running the Streamlit App Locally`
+
+I've added a new optional step explaining the theme configuration.
+
+#### Step 6 (Optional): Customize the UI Theme
+
+This project includes a `.streamlit/config.toml` file to customize the application's appearance. You can modify this file to change colors, fonts, and more to match your brand.
+
+1.  Create a folder named `.streamlit` in your project's root directory.
+2.  Inside this folder, create a file named `config.toml`.
+3.  Add your theme settings. For example:
+
+<!-- end list -->
+
+```toml
+# .streamlit/config.toml
+
+[theme]
+# Primary accent color for interactive elements.
+primaryColor = "#d33682"
+
+# Background color for the main content area.
+backgroundColor = "#031F54"
+
+# Background color used for the sidebar and most interactive widgets.
+secondaryBackgroundColor = "#213C56"
+
+# Color used for almost all text.
+textColor = "#fff"
+```
+
+Streamlit will automatically apply these settings when you run the app.
+
+-----
+
+### \#\# Updated Section: `Project Structure`
+
+The project structure has been updated to include the new `.streamlit` directory and `config.toml` file.
+
+```
+.
+├── .streamlit/
+│   └── config.toml
 ├── .gitignore
 ├── Ragapp.py
 ├── requirements.txt
-├── .streamlit
 └── README.md
+
 ```
