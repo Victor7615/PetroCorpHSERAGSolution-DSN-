@@ -50,11 +50,11 @@ This is the foundation of the project. Follow these steps to set up all the nece
 
 **Prerequisites:** An active Azure Subscription.
 
-### Step 1: Create an Azure AI Studio Project
+### Step 1: Create an Azure AI Foundary Project
 
 1.  Navigate to the [Azure Portal](https://portal.azure.com/).
 2.  Create a new **Azure AI Hub** resource. This will serve as a container for your AI projects.
-3.  Once the AI Hub is created, navigate to **Azure AI Studio** and create a new **Project** within your Hub. This project will be your workspace.
+3.  Once the AI Hub is created, navigate to **Azure AI Foundary** and create a new **Project** within your Hub. This project will be your workspace.
 
 ### Step 2: Deploy the AI Models
 
