@@ -143,54 +143,7 @@ INDEX_NAME="hse-policy-index"
 ```bash
 streamlit run Ragapp.py
 ```
-
------
-
-##  Part 3: Deploying to Render
-
-The final step is to deploy your application to make it publicly accessible.
-
-### Step 1: Prepare Your Repository
-
-Ensure your project has the `Ragapp.py`, `requirements.txt`, `.gitignore`.
-
-The `startup.sh` file should contain:
-
-
-### Step 2: Create a New Web Service on Render
-
-1.  Log in to your Render account and create a **New Web Service**.
-2.  Connect your GitHub repository.
-3.  Configure the settings:
-      * **Name**: A unique name for your app (e.g., `hse-assist`).
-      * **Build Command**: `pip install -r requirements.txt`
-      * **Start Command**: `bash startup.sh`
-
-### Step 3: Add Environment Variables
-
-In the **Environment** tab on Render, add the same key-value pairs from your local `.env` file. **Do not use quotes.**
-
-### Step 4: Deploy
-
-Click **Create Web Service**. Render will build and deploy your application, providing you with a public URL.
-
------
-
-## 📂 Project Structure
-
-```
-.
-Of course. Adding a UI theme configuration is a great way to customize your application's appearance.
-
-Here are the updated sections for your `README.md` file to reflect this change.
-
------
-
-### \#\# Updated Section: `Part 2: Running the Streamlit App Locally`
-
-I've added a new optional step explaining the theme configuration.
-
-#### Step 6 (Optional): Customize the UI Theme
+### Step 6 (Optional): Customize the UI Theme
 
 This project includes a `.streamlit/config.toml` file to customize the application's appearance. You can modify this file to change colors, fonts, and more to match your brand.
 
@@ -221,7 +174,40 @@ Streamlit will automatically apply these settings when you run the app.
 
 -----
 
-### \#\# Updated Section: `Project Structure`
+-----
+
+##  Part 3: Deploying to Render
+
+The final step is to deploy your application to make it publicly accessible.
+
+### Step 1: Prepare Your Repository
+
+Ensure your project has the `Ragapp.py`, `requirements.txt`, `.gitignore`.
+
+
+
+
+### Step 2: Create a New Web Service on Render
+
+1.  Log in to your Render account and create a **New Web Service**.
+2.  Connect your GitHub repository.
+3.  Configure the settings:
+      * **Name**: A unique name for your app (e.g., `hse-assist`).
+      * **Build Command**: `pip install -r requirements.txt`
+     
+
+### Step 3: Add Environment Variables
+
+In the **Environment** tab on Render, add the same key-value pairs from your local `.env` file. **Do not use quotes.**
+
+### Step 4: Deploy
+
+Click **Create Web Service**. Render will build and deploy your application, providing you with a public URL.
+
+---
+
+
+### `Project Structure`
 
 The project structure has been updated to include the new `.streamlit` directory and `config.toml` file.
 
